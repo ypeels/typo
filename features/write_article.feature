@@ -8,11 +8,10 @@ Feature: Write Articles
     And I am logged into the admin panel
 
   Scenario: Successfully write articles
-    Given I am on the new article page
-    When I fill in "article_title" with "Foobar"
-    And I fill in "article__body_and_extended_editor" with "Lorem Ipsum"
-    And I press "Publish"
-    Then I should be on the admin content page
+    
+	#Homework 1-1: DRY'd out to article_steps.rb for reuse in merge_articles.feature
+	Given I have written an article with title "Foobar" and body "Lorem Ipsum"
+	
     When I go to the home page
     Then I should see "Foobar"
     When I follow "Foobar"
