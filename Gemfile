@@ -56,4 +56,7 @@ group :development, :test do
   gem 'cucumber-rails-training-wheels'
   gem 'database_cleaner'
   gem 'capybara'
+
+  # will this enable AutoTest?
+  gem 'ZenTest'
 end
