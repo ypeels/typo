@@ -2,5 +2,40 @@
 <%= form_tag(form_action, :id => "#{form_type}_form", :enctype => "multipart/form-data", :class => className) do %>
 
   <%= render :partial => "form" %>
+  
+<% end %>
 
+
+<%-# Homework 1-1 entry point -%>
+
+<%-# breadcrumb trail: -%>
+<%-# - "You can associate the following resources" -%>
+<%-# - admin/content/_attachment.html.erb -%>
+<%-# - admin/shared/_edit.html.erb -%>
+<%-# - admin/content/new.html.erb (not admin/pages/new.html.erb or admin/pages/edit.html.erb?) -%>
+
+<%-# reasons to stay in _form.html.erb -%>
+<%-# - keep _edit.html.erb relatively clean? -%>
+<%-# - stay within div class="editor-left" (is this necessary? meh) -%>
+<%-# - can still use @article and @article.id error checking - by copying _attachment.html.erb -%>
+
+<%-# reasons to move to _edit.html.erb -%>
+<%-# - most importantly, can use form_tag again -%>
+<%-#   - the Tip says "Be careful of which views you edit" - so "Merge" should be OUTSIDE form#article_form -%>
+<%-# - don't have to worry about "what if _form is rendered in non-edit pages -%>
+
+<%-# start by mimicking Uploads? -%>
+
+
+<%-# to-do: hide this unless user is an admin -%>
+<h3><%= _("Merge Articles")%></h3>
+
+<%-# cf. myrottenpotatoes/app/views/movies/index.html.haml -%>
+<%= form_tag :action => 'merge' do %>
+  
+  <%-# Specification 6: merge_with - that was (RELATIVELY) easy... -%>
+  <label for="merge_with">Article ID</label>  
+  <%= text_field_tag 'merge_with' %> 
+  
+  <%= submit_tag 'Merge' %>
 <% end %>
