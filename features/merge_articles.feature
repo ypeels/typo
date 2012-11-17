@@ -11,7 +11,9 @@ Feature: Merge Articles
     #And the user "admin" has written an article with title "answer" and body "to get to the other side"
     When I go to the home page
     And I follow "question"
-    Then I should see "chicken shit" # yep, this data doesn't conflict with the non-admin's data
+    
+    # yep, this data doesn't conflict with the non-admin's data
+    Then I should see "chicken shit" 
     
     # cf. 169.1 Homework 4 filter_movie_list.feature
     #And the following articles exist: 

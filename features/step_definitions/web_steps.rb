@@ -36,7 +36,7 @@ Given /^the blog is set up$/ do
                                    :base_url => 'http://localhost:3000'});
   Blog.default.save!
   User.create!({:login => 'admin',
-                :password => 'admin',
+                :password => 'aaaaaaaa',
                 :email => 'joe@snow.com',
                 :profile_id => 1,
                 :name => 'admin',
@@ -44,7 +44,7 @@ Given /^the blog is set up$/ do
                
   # Homework 1-1 creating non-admin user for first scenario. is this the right place to do this?         
   User.create!({:login => 'publisher',
-                :password => 'publisher',
+                :password => 'bbbbbbbb',
                 :email => 'publisher@example.com',
                 :profile_id => Profile.find_by_label('publisher').id, # 065_add_users_rights.rb
                 :name => 'Publisher',
@@ -53,10 +53,19 @@ end
 
 # Homework 1-1 - modified to allow for multiple users
 # password == user name from "blog is set up" - these steps were always dependent anyway...
-And /^I am logged into the ([a-z]*) panel$/ do |user|
+And /^I am logged into the admin panel$/ do
+  step %Q{I am logged into the admin panel with password "aaaaaaaa"}
+end
+
+And /^I am logged into the publisher panel$/ do
+  step %Q{I am logged into the publisher panel with password "bbbbbbbb"}
+end
+
+
+And /^I am logged into the ([a-z]*) panel with password "(.*)"$/ do |user, password| 
   visit '/accounts/login'
   fill_in 'user_login', :with => "#{user}"
-  fill_in 'user_password', :with => "#{user}"
+  fill_in 'user_password', :with => "#{password}"
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
@@ -64,6 +73,7 @@ And /^I am logged into the ([a-z]*) panel$/ do |user|
     assert page.has_content?('Login successful')
   end
 end
+
 
 # Homework 1-1
 Given /^I am logged out$/ do
