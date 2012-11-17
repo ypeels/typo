@@ -9,15 +9,13 @@ Feature: Merge Articles
     And I have written an article with title "question" and body "why did the chicken shit the road?"
     And I have written an article with title "answer" and body "it just had to go"
     #And the user "admin" has written an article with title "answer" and body "to get to the other side"
-    When I go to the home page
+    
+    # NOT home page, which is read-only
+    When I go to the admin content page
     And I follow "question"
     
     # yep, this data doesn't conflict with the non-admin's data
     Then I should see "chicken shit" 
-    
-    # cf. 169.1 Homework 4 filter_movie_list.feature
-    #And the following articles exist: 
-    #| table| ?? not sure how much of this data i need!! screw this...
     
     Scenario: When articles are merged, the merged article should contain the text of both previous articles
       Then I should see "Merge Articles"
