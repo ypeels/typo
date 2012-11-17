@@ -36,23 +36,38 @@ Given /^the blog is set up$/ do
                                    :base_url => 'http://localhost:3000'});
   Blog.default.save!
   User.create!({:login => 'admin',
-                :password => 'aaaaaaaa',
+                :password => 'admin',
                 :email => 'joe@snow.com',
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+               
+  # Homework 1-1 creating non-admin user for first scenario. is this the right place to do this?         
+  User.create!({:login => 'publisher',
+                :password => 'publisher',
+                :email => 'publisher@example.com',
+                :profile_id => Profile.find_by_label('publisher').id, # 065_add_users_rights.rb
+                :name => 'Publisher',
+                :state => 'active'})
 end
 
-And /^I am logged into the admin panel$/ do
+# Homework 1-1 - modified to allow for multiple users
+# password == user name from "blog is set up" - these steps were always dependent anyway...
+And /^I am logged into the ([a-z]*) panel$/ do |user|
   visit '/accounts/login'
-  fill_in 'user_login', :with => 'admin'
-  fill_in 'user_password', :with => 'aaaaaaaa'
+  fill_in 'user_login', :with => "#{user}"
+  fill_in 'user_password', :with => "#{user}"
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
   else
     assert page.has_content?('Login successful')
   end
+end
+
+# Homework 1-1
+Given /^I am logged out$/ do
+  visit '/accounts/logout' # no path helper in rake routes?
 end
 
 # Single-line step scoper
