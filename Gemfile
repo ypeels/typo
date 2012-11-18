@@ -59,4 +59,17 @@ group :development, :test do
 
   # will this enable AutoTest?
   gem 'ZenTest'
+  
+  # mhartl sections 3.6.2-3
+  gem 'guard-rspec', '1.2.1'
+  gem 'guard-spork', '1.2.0'
+  gem 'spork', '0.9.2'
+  
 end
+
+# mhartl section 3.6.2: test gems on Linux
+group :test do
+  gem 'rb-inotify', '0.8.8'
+  gem 'libnotify', '0.5.9'
+end
+
