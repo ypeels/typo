@@ -466,4 +466,43 @@ class Article < Content
     to = to - 1 # pull off 1 second so we don't overlap onto the next day
     return from..to
   end
+  
+  # Homework 1-1
+  public
+  #def self.merge(article_id1, article_id2)
+  #  merged_article = Article.find(article_id1).merge_with(article_id2)
+  #  #debugger
+  #  #merged_article.save!
+  #end
+  
+  def merge_with(other_article_id)
+  
+    # ugh, to allow error messages to be displayed to the user, all error-checking is in the controller...(no flash in model?)
+    
+    other_article = Article.find(other_article_id) # Article.find("1") == Article.find(1) apparently
+    
+    # doesn't work? self gets modified either way?
+    #merged_article = Article.find(self.id) # copy current instance, so this isn't merge_with!(.)
+
+    #debugger
+    #body << other_article.body # wtf why doesn't THIS work??
+    self.body = self.body + other_article.body
+    #debugger
+    
+    # desperation: copy Admin::ContentController#new_or_edit??
+    #keywords = Tag.collection_to_string(tags) + Tag.collection_to_string(other_article.tags)
+    
+    # desperation 2: force fields to be identical with Hello World
+    #extended = nil
+    #text_filter_id = 5
+    #allow_pings = true
+    #settings = {"password" => nil}
+    
+    #save
+  
+    #"Article#merge_with returns " + (other_article_id.to_s)
+    
+    
+    return self
+  end
 end
