@@ -19,10 +19,15 @@ Feature: Merge Articles
     
     Scenario: When articles are merged, the merged article should contain the text of both previous articles
       Then I should see "Merge Articles"
+      
+
   
   #Scenario 2: When articles are merged, the merged article should contain the text of both previous articles
   #Scenario 3: When articles are merged, the merged article should have one author (either author of the originals)
   #Scenario 4: Comments on each of the original articles should all carry over and point to the new, merged article
   #Scenario 5: The title of the new article should be the title from either of the merged articles
-  #Spec 6: the form field containing the ID of the article to merge with must have HTML attribute name = merge_with (autograder)
   
+    # unnumbered scenario from paragraph below numbered list
+    Scenario: A New article cannot be merged
+      When I follow "New Article"
+      Then I should not see "Merge Articles"

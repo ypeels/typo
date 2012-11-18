@@ -22,12 +22,12 @@
 <%-# reasons to move to _edit.html.erb -%>
 <%-# - most importantly, can use form_tag again -%>
 <%-#   - the Tip says "Be careful of which views you edit" - so "Merge" should be OUTSIDE form#article_form -%>
-<%-# - don't have to worry about "what if _form is rendered in non-edit pages -%>
+<%-# - don't have to worry about "what if _form is rendered in other pages" -%>
 
 <%-# to-do: The action 'merge' could not be found for Admin::ContentController -%>
 
-<%-# cobbled together from _form.html.erb syntax and schema.rb -%>
-<% if current_user.profile_id == Profile.find_by_label('admin').id %>
+<%-# cobbled together from _form/_attachment.html.erb syntax and schema.rb-%>
+<% if current_user.profile_id == Profile.find_by_label('admin').id and @article and @article.id %>
 
   <h3><%= _("Merge Articles")%></h3>
 
