@@ -24,18 +24,21 @@
 <%-#   - the Tip says "Be careful of which views you edit" - so "Merge" should be OUTSIDE form#article_form -%>
 <%-# - don't have to worry about "what if _form is rendered in non-edit pages -%>
 
-<%-# start by mimicking Uploads? -%>
+<%-# to-do: The action 'merge' could not be found for Admin::ContentController -%>
 
+<%-# cobbled together from _form.html.erb syntax and schema.rb -%>
+<% if current_user.profile_id == Profile.find_by_label('admin').id %>
 
-<%-# to-do: hide this unless user is an admin -%>
-<h3><%= _("Merge Articles")%></h3>
+  <h3><%= _("Merge Articles")%></h3>
 
-<%-# cf. myrottenpotatoes/app/views/movies/index.html.haml -%>
-<%= form_tag :action => 'merge' do %>
-  
-  <%-# Specification 6: merge_with - that was (RELATIVELY) easy... -%>
-  <label for="merge_with">Article ID</label>  
-  <%= text_field_tag 'merge_with' %> 
-  
-  <%= submit_tag 'Merge' %>
+  <%-# cf. myrottenpotatoes/app/views/movies/index.html.haml -%>
+  <%= form_tag :action => 'merge' do %>
+    
+    <%-# Specification 6: merge_with - that was (RELATIVELY) easy... -%>
+    <label for="merge_with">Article ID</label>  
+    <%= text_field_tag 'merge_with' %> 
+    
+    <%= submit_tag 'Merge' %>
+  <% end %>
+
 <% end %>
