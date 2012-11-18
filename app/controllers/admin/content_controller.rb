@@ -6,6 +6,36 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
+  # homework 1-1... this IS what gets called, but is this right? should i have created another route?
+  def merge
+    #debugger
+    
+    # for the sake of morale i'm going to show just how fast i can code this when i don't bother with TDD
+    # when you have no clue what code you're supposed to write, let alone what TEST code you're supposed to write,
+    # nothing beats experimentation in the interactive debugger...
+        # error-checking : abort if user is non-admin
+    if current_user.profile_id == Profile.find_by_label('admin').id
+      flash[:warning] = "Non-admins cannot merge"
+      merge_finalize
+      return nil
+    end
+    
+    
+    
+    # this one-line code is currently compatible with my "test suite...
+    Article.find(1)
+    
+    # this would have been a nice stub if i'd been developing in the debugger
+    #flash[:notice] = "merge motha!" - raises error in spec. meh. NO idea what i'm doing on testing side
+    #redirect_to admin_content_path - raises error in spec. still NO idea what i'm doing on testing side
+  end
+  protected
+  def merge_finalize
+    # simple for now -  shared cleanup routine
+    redirect_to admin_content_path
+  end  
+  public
+  
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
@@ -240,4 +270,5 @@ class Admin::ContentController < Admin::BaseController
   def setup_resources
     @resources = Resource.by_created_at
   end
+
 end
