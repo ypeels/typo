@@ -16,18 +16,33 @@ Feature: Merge Articles
     
     # yep, this data doesn't conflict with the non-admin's data
     Then I should see "chicken shit" 
+    And I should see "Merge Articles"
+    
+    # by running repeated cucumber tests and leveraging html output when "I should see" fails
+    # "question" = 3
+    # "answer" = 4
+    
+    When I fill in "merge_with" with "4"
+    And I press "Merge"
+    Then I should be on the admin content page
+    And I should not see "Merge error"
+    
+    When I follow "question"
+    
+    
     
     Scenario: When articles are merged, the merged article should contain the text of both previous articles
-      Then I should see "Merge Articles"
+      Then I should see "chicken shit"
+      And I should see "had to go"
       
 
   
-  #Scenario 2: When articles are merged, the merged article should contain the text of both previous articles
+  # ugh these aren't required as scenarios, and I'm not totally sure how to access all that data, even from step definitions
   #Scenario 3: When articles are merged, the merged article should have one author (either author of the originals)
   #Scenario 4: Comments on each of the original articles should all carry over and point to the new, merged article
   #Scenario 5: The title of the new article should be the title from either of the merged articles
   
-    # unnumbered scenario from paragraph below numbered list
+    # unnumbered specification from paragraph below numbered list
     Scenario: A New article cannot be merged
       When I follow "New Article"
       Then I should not see "Merge Articles"

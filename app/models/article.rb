@@ -469,40 +469,23 @@ class Article < Content
   
   # Homework 1-1
   public
-  #def self.merge(article_id1, article_id2)
-  #  merged_article = Article.find(article_id1).merge_with(article_id2)
-  #  #debugger
-  #  #merged_article.save!
-  #end
-  
-  def merge_with(other_article_id)
+  def merge_with!(other_article_id)
   
     # ugh, to allow error messages to be displayed to the user, all error-checking is in the controller...(no flash in model?)
-    
     other_article = Article.find(other_article_id) # Article.find("1") == Article.find(1) apparently
     
+    # TODO: make this method non-destructive!?
     # doesn't work? self gets modified either way?
-    #merged_article = Article.find(self.id) # copy current instance, so this isn't merge_with!(.)
+    #merged_article = self # copy current instance, so this isn't merge_with!(.)
 
-    #debugger
-    #body << other_article.body # wtf why doesn't THIS work??
-    self.body = self.body + other_article.body
-    #debugger
+    # THESE DON'T WORK AND TOOK ME HOURS TO TRACK DOWN - looks right here via debugger, but save() will ROLL BACK changes!
+    # basically 3-4 hours on a single-line ruby syntax bug? got greedy with <<; "ruby works pretty much as you'd expect it to" my ASS
+    #body << other_article.body # oh this isn't an accessor, it just returns the value (body + other_article.body) to NOWHERE
+    #self.body << other_article.body # this too? - even though looks fine in the debugger
     
-    # desperation: copy Admin::ContentController#new_or_edit??
-    #keywords = Tag.collection_to_string(tags) + Tag.collection_to_string(other_article.tags)
-    
-    # desperation 2: force fields to be identical with Hello World
-    #extended = nil
-    #text_filter_id = 5
-    #allow_pings = true
-    #settings = {"password" => nil}
-    
-    #save
-  
-    #"Article#merge_with returns " + (other_article_id.to_s)
-    
-    
-    return self
+    # Specification 2: merge text
+    self.body = self.body + other_article.body    
+    self
   end
+  
 end

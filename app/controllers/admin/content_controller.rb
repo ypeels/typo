@@ -243,13 +243,13 @@ class Admin::ContentController < Admin::BaseController
   # homework 1-1... this IS what gets called, but is this right? should i have created another route?
   public
   def merge
-    
+
     # can user-error-checking be postponed until the model method??
     # meh, the homework wants model INSTANCE method Article#merge_with(other_article_id)
     
     # error-checking : abort if user is non-admin
     unless current_user.profile_id == Profile.find_by_label('admin').id
-      flash[:error] = _("Non-admins are forbidden to merge")
+      flash[:error] = _("Merge error: Non-admins are forbidden to merge")
       return merge_finalize # fuck it i don't care right now
     end
     
@@ -258,79 +258,35 @@ class Admin::ContentController < Admin::BaseController
     
     # error-checking : abort if current or merge_with article does not exist
     unless Article.exists?(current_article_id) && Article.exists?(other_article_id)
-      flash[:error] = _("An article does not exist!?")
+      flash[:error] = _("Merge error: An article does not exist!?")
       return merge_finalize
     end
     
     # error checking: no self-merge (flash doesn't exist in model, didn't feel like "porting" it in
     unless current_article_id.to_i != other_article_id.to_i # typically comes in as strings?
-      flash[:error] = _("Cannot merge article #{current_article_id} into itself")
+      flash[:error] = _("Merge error: Cannot merge article #{current_article_id} into itself")
       return merge_finalize
     end
-    
 
-    
+    # TODO: move error-checking into model, and check indirectly whether merge_with!() modified anything? 
+    # is that even possible? currently don't know how to make merge_with NON-DESTRUCTIVE
     #debugger
     
-    # the nominal case: rest of logic in model
-    #current_article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
-    #current_article.merge_with(other_article_id)
+    # the nominal case
+    current_article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
+    current_article.merge_with!(other_article_id) # couldn't get merge_with to be "non-destructive"
+    current_article.save!    
     
-    @article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
-    
-    # not needed? admins have full access, don't they?
-    #unless @article.access_by?(current_user)
-    #  flash[:error] = _("Error, you are not allowed to perform this action")
-    #  return merge_finalize
-    #end
-    
-    # uh, setup shit from new_or_edit()??? (gets called on clicking Publish)
-    @article.text_filter = current_user.text_filter if current_user.simple_editor?
-    @post_types = PostType.find(:all)
-    @article.keywords = Tag.collection_to_string @article.tags
-    @article.published_at = Time.new.utc
-    set_article_author
-    save_attachments
-    
-    # a copy of WORKING instance variables?
-    # @article = <Article id: 7, type: "Article", title: "article 1", author: "admin", body: "fuck you22", extended: "", excerpt: "", created_at: "2012-11-18 22:30:34", updated_at: "2012-11-18 23:07:44", user_id: 1, permalink: "article-1", guid: "35001ee1-13c7-47c5-aac5-79fbf8eed59a", text_filter_id: 1, whiteboard: nil, name: nil, published: true, allow_pings: false, allow_comments: true, published_at: "2012-11-18 17:07:44", state: "published", parent_id: nil, settings: {"password"=>""}, post_type: "read">
-    # @post_types = []
-    @article.updated_at = Time.new.utc
-    
-    # wtf, @article.body is the ONLY field that isn't saving??
-    
-    @article.merge_with(other_article_id)
-    
-    #debugger
-    
-    @article.save
-    #current_article.save!
-    
-    #Article.merge(current_article_id, other_article_id)
-    
-    #debugger
-    #current_article.save!
-
-    
-    #debugger
-    
-    #current_article.save # why does this UNDO changes to the db?? wtf, seriously??
-    
-    
-    # merged_article.save # i THINK i should run this, but...?
-    
-    flash[:warning] = @article.body
-    #flash.keep # unnecessary? also raises error in spec. meh. NO idea what i'm doing on testing side
     return merge_finalize
   end
   
   private
   def merge_finalize
-    # simple for now -  shared cleanup routine
-    #debugger
+    # simple for now -  shared cleanup routine used at many points in merge()
     #flash.keep # unnecessary if there hasn't been an html request
-    flash[:notice] = "merge_finalize"
-    redirect_to admin_content_path # raises error in spec. still NO idea what i'm doing on testing side
+    #flash[:notice] = "merge_finalize"    
+    flash[:notice] = "Merge succeeded." unless flash[:error]
+    redirect_to admin_content_path # raises error in rspec. still NO idea what i'm doing on testing side
   end  
   
 end
