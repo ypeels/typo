@@ -275,7 +275,8 @@ class Admin::ContentController < Admin::BaseController
     # the nominal case
     current_article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
     current_article.merge_with!(other_article_id) # couldn't get merge_with to be "non-destructive"
-    current_article.save!    
+    current_article.save!
+    Article.destroy(other_article_id)
     
     return merge_finalize
   end
