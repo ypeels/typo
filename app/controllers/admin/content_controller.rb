@@ -244,6 +244,7 @@ class Admin::ContentController < Admin::BaseController
   public
   def merge
 
+    # this controller is getting pretty "thick"...
     # can user-error-checking be postponed until the model method??
     # meh, the homework wants model INSTANCE method Article#merge_with(other_article_id)
     
@@ -262,20 +263,32 @@ class Admin::ContentController < Admin::BaseController
       return merge_finalize
     end
     
-    # error checking: no self-merge (flash doesn't exist in model, didn't feel like "porting" it in
+    # error-checking: no self-merge (flash doesn't exist in model, didn't feel like "porting" it in
     unless current_article_id.to_i != other_article_id.to_i # typically comes in as strings?
       flash[:error] = _("Merge error: Cannot merge article #{current_article_id} into itself")
       return merge_finalize
     end
-
+    
     # TODO: move error-checking into model, and check indirectly whether merge_with!() modified anything? 
     # is that even possible? currently don't know how to make merge_with NON-DESTRUCTIVE
     #debugger
     
-    # the nominal case
     current_article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
+    
+    # error-checking: double-check author exists (merged in model method)
+    other_article = Article.find(other_article_id)
+    unless  current_article.author and not current_article.author.empty? and
+            other_article.author and not other_article.author.empty?
+      flash[:error] = _("Merge error: neither article has an author?? poor orphans")
+      return merge_finalize
+    end
+
+    
+    # the nominal case
     current_article.merge_with!(other_article_id) # couldn't get merge_with to be "non-destructive"
     current_article.save!
+    
+    # unwritten spec (from auto-grader): remove "other" article after merge
     Article.destroy(other_article_id)
     
     return merge_finalize
