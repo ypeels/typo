@@ -484,10 +484,19 @@ class Article < Content
     #self.body << other_article.body # this too? - even though looks fine in the debugger
     
     # Specification 2: merge text
-    self.body = self.body + "\r\n\r\n" + other_article.body
+    if self.body && other_article.body
+      self.body = self.body + "\r\n\r\n" + other_article.body
+    end
     
-    # Specification 3: author (controller error-checked that at least ONE article has an author)
-    self.author = other_article.author if !self.author || self.author.empty?
+    # Specification 3: author (with triple-check on top of controller's double-check)
+    if (!self.author or self.author.empty?) and (other_article.author and not other_article.author.empty?)
+      self.author = other_article.author 
+    end
+    
+    # Specification 5: title (controller error-checked that at least ONE article has a title)
+    if (!self.title or self.title.empty?) and (other_article.title and not other_article.title.empty?)
+      self.title = other_article.title 
+    end
     
     # return value (unnumbered spec - even though I don't use it that way)
     self

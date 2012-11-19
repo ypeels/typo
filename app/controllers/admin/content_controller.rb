@@ -282,14 +282,19 @@ class Admin::ContentController < Admin::BaseController
       return merge_finalize
     end
     
-    # error-checking (Spec 3): double-check author exists (merged in model method)    
+    # error-checking (Spec 3): double-check SOMEBODY has a non-empty author (merged in model method)    
     unless  current_article.author and not current_article.author.empty? and
             other_article.author and not other_article.author.empty?
-      flash[:error] = _("Merge error: neither article has an author?? poor orphans")
+      flash[:error] = _("Merge error: neither article has a non-empty author?? poor orphans")
       return merge_finalize
     end
     
-    # error-checking: 
+    # error-checking (Spec 5): double-check SOMEBODY has a non-empty title - probably overkill (overlaps with validations)
+    unless  current_article.title and not current_article.title.empty? and
+            other_article.title and not other_article.title.empty?
+      flash[:error] = _("Merge error: neither article has a non-empty title?? poor unnamed non-orphans")
+      return merge_finalize
+    end
 
     
     # the nominal case
