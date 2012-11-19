@@ -289,6 +289,12 @@ class Admin::ContentController < Admin::BaseController
       return merge_finalize
     end
     
+    # error-checking (Spec 4): double-check that comments "array" is non-nil
+    unless current_article.comments and other_article.comments
+      flash[:error] = _("Merge error: one of the article has nil comments?")
+      return merge_finalize
+    end
+    
     # error-checking (Spec 5): double-check SOMEBODY has a non-empty title - probably overkill (overlaps with validations)
     unless  current_article.title and not current_article.title.empty? and
             other_article.title and not other_article.title.empty?
@@ -302,6 +308,7 @@ class Admin::ContentController < Admin::BaseController
     current_article.save!
     
     # unwritten spec (from auto-grader): remove "other" article after merge
+    #flash[:error] = _("article destruction turned off for testing")
     Article.destroy(other_article_id)
     
     return merge_finalize

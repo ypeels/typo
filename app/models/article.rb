@@ -493,6 +493,14 @@ class Article < Content
       self.author = other_article.author 
     end
     
+    # Specification 4: comments (ah, some Week 1 stuff now)
+    # finally, something actually I actually LEARNED in class
+    #other_article.comments.each { |comment| comment.article_id = self; self.comments << comment }    
+    # more concise alternative! http://stackoverflow.com/questions/10902497/activerecord-move-all-children-to-another-record
+    if self.comments and other_article.comments # with triple-check for non-nil
+      self.comments << other_article.comments
+    end
+    
     # Specification 5: title (controller error-checked that at least ONE article has a title)
     if (!self.title or self.title.empty?) and (other_article.title and not other_article.title.empty?)
       self.title = other_article.title 
