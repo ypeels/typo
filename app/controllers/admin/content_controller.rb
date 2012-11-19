@@ -274,14 +274,22 @@ class Admin::ContentController < Admin::BaseController
     #debugger
     
     current_article = Article.find(current_article_id) # have to move to separate line to drop into debugger on Article instance??
-    
-    # error-checking: double-check author exists (merged in model method)
     other_article = Article.find(other_article_id)
+    
+    # error-checking (Spec 2): both articles have non-nil body
+    unless current_article.body and other_article.body
+      flash[:error] = _("Merge error: one of the articles has a nil body?!")
+      return merge_finalize
+    end
+    
+    # error-checking (Spec 3): double-check author exists (merged in model method)    
     unless  current_article.author and not current_article.author.empty? and
             other_article.author and not other_article.author.empty?
       flash[:error] = _("Merge error: neither article has an author?? poor orphans")
       return merge_finalize
     end
+    
+    # error-checking: 
 
     
     # the nominal case
