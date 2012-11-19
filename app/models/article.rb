@@ -484,7 +484,7 @@ class Article < Content
     #self.body << other_article.body # this too? - even though looks fine in the debugger
     
     # Specification 2: merge text
-    self.body = self.body + other_article.body    
+    self.body = self.body + " " + other_article.body    
     self
   end
   
