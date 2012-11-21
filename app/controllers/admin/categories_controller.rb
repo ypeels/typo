@@ -24,11 +24,11 @@ class Admin::CategoriesController < Admin::BaseController
   private
 
   def new_or_edit
-    @categories = Category.find(:all)
-    @category = Category.find(params[:id]) if params[:id]
+    @categories = Category.find(:all)    
     
     # Homework 1-2: initialize @category if still nil (since params[:id] == nil)
     # n.b. new() doesn't persist to database (that's create())
+    @category = Category.find(params[:id]) if params[:id]
     @category ||= Category.new 
     
     @category.attributes = params[:category] 
